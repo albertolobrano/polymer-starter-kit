@@ -109,33 +109,11 @@ gulp.task('elements', function() {
 // "dot" files are specifically tricky due to them being hidden on
 // some systems.
 gulp.task('ensureFiles', function(cb) {
-  var requiredFiles = ['.jscsrc', '.jshintrc', '.bowerrc'];
+  var requiredFiles = ['.bowerrc'];
 
   ensureFiles(requiredFiles.map(function(p) {
     return path.join(__dirname, p);
   }), cb);
-});
-
-// Lint JavaScript
-gulp.task('lint', ['ensureFiles'], function() {
-  return gulp.src([
-      'app/scripts/**/*.js',
-      'app/elements/**/*.js',
-      'app/elements/**/*.html',
-      'gulpfile.js'
-    ])
-    .pipe(reload({
-      stream: true,
-      once: true
-    }))
-
-  // JSCS has not yet a extract option
-  .pipe($.if('*.html', $.htmlExtract()))
-  .pipe($.jshint())
-  .pipe($.jscs())
-  .pipe($.jscsStylish.combineWithHintResults())
-  .pipe($.jshint.reporter('jshint-stylish'))
-  .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
 });
 
 // Optimize images
@@ -150,7 +128,8 @@ gulp.task('copy', function() {
     '!app/test',
     '!app/elements',
     '!app/bower_components',
-    '!app/cache-config.json'
+    '!app/cache-config.json',
+    '!**/.DS_Store'
   ], {
     dot: true
   }).pipe(gulp.dest(dist()));
@@ -236,7 +215,7 @@ gulp.task('clean', function() {
 });
 
 // Watch files for changes & reload
-gulp.task('serve', ['lint', 'styles', 'elements', 'images'], function() {
+gulp.task('serve', ['styles', 'elements'], function() {
   browserSync({
     port: 5000,
     notify: false,
@@ -259,10 +238,10 @@ gulp.task('serve', ['lint', 'styles', 'elements', 'images'], function() {
     }
   });
 
-  gulp.watch(['app/**/*.html'], reload);
+  gulp.watch(['app/**/*.html', '!app/bower_components/**/*.html'], reload);
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
   gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
-  gulp.watch(['app/{scripts,elements}/**/{*.js,*.html}'], ['lint']);
+  gulp.watch(['app/scripts/**/*.js'], reload);
   gulp.watch(['app/images/**/*'], reload);
 });
 
@@ -293,9 +272,9 @@ gulp.task('serve:dist', ['default'], function() {
 gulp.task('default', ['clean'], function(cb) {
   // Uncomment 'cache-config' if you are going to use service workers.
   runSequence(
-    ['copy', 'styles'],
+    ['ensureFiles', 'copy', 'styles'],
     'elements',
-    ['lint', 'images', 'fonts', 'html'],
+    ['images', 'fonts', 'html'],
     'vulcanize', // 'cache-config',
     cb);
 });

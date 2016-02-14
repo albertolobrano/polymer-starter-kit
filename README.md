@@ -14,11 +14,11 @@
 * [Recipes](/docs/README.md/) for ES2015 support, Polymer performance, using Chrome Dev Editor, Deploying to GitHub Pages, Deploying to Firebase, and Mobile Chrome Apps
 
 ### Demo
-See latest Polymer Starter Kit Demo (from master) at http://polymerelements.github.io/polymer-starter-kit
+See latest Polymer Starter Kit Demo (from master) at https://polymerelements.github.io/polymer-starter-kit/
 
 ### Tutorials
 
-Check out the Polymer Starter Kit tutorials on [polymer-project.org](https://polymer-project.org):
+Check out the Polymer Starter Kit tutorials on [polymer-project.org](https://www.polymer-project.org):
 
 * [Set up the PSK](https://www.polymer-project.org/1.0/docs/start/psk/set-up.html)
 * [Create a page](https://www.polymer-project.org/1.0/docs/start/psk/create-a-page.html)
@@ -118,7 +118,7 @@ To run tests Java 7 or higher is required. To update Java go to http://www.oracl
 gulp
 ```
 
-Build and optimize the current project, ready for deployment. This includes linting as well as vulcanization, image, script, stylesheet and HTML optimization and minification.
+Build and optimize the current project, ready for deployment. This includes vulcanization, image, script, stylesheet and HTML optimization and minification.
 
 ## Application Theming & Styling
 
@@ -171,7 +171,7 @@ Components installed by Bower live in the `app/bower_components` directory. This
 1. Uncomment this line  `// app.baseUrl = '/polymer-starter-kit/';` in app.js near the top
 2. Change `app.baseUrl = '/polymer-starter-kit/';`  to `app.baseUrl = '/your-pathname/';` (ex: if you repo is `github.com/username/bobs-awesome-site` you would change this to `bobs-awesome-site`)
 3. Run `gulp build-deploy-gh-pages` from command line
-4. To see changes wait 1-2 minutes then load Github pages for your app (ex: http://polymerelements.github.io/polymer-starter-kit)
+4. To see changes wait 1-2 minutes then load Github pages for your app (ex: https://polymerelements.github.io/polymer-starter-kit/)
 
 [See more details](/docs/deploy-to-github-pages.md/)
 
@@ -326,6 +326,8 @@ to work around this. You can do this by opening a Command Prompt/terminal and ru
 Node.js (and npm) may have been installed into `C:\Program Files\`. Updating npm by running `npm install npm@2.11.0 -g` will install npm
 into `%AppData%\npm`, but your system will still use the npm version. You can avoid this by deleting your older npm from `C:\Program Files\nodejs`
 as described [here](https://github.com/npm/npm/issues/6309#issuecomment-67549380).
+
+If you get a browser console error indicating that an element you know you have installed is missing, try deleting the bower_components folder, then run `bower cache clean` followed by `bower install` to reinstall. This can be especially helpful when upgrading from a prior version of the Polymer Starter Kit. 
 
 If the issue is to do with a failure somewhere else, you might find that due to a network issue
 a dependency failed to correctly install. We recommend running `npm cache clean` and deleting the `node_modules` directory followed by

@@ -15,7 +15,7 @@ This recipe focuses on adding an ES2015 to ES5 transpile step to Polymer Starter
 + gulp.task('js', function () {
 +  return gulp.src(['app/**/*.{js,html}', '!app/bower_components/**/*'])
 +    .pipe($.sourcemaps.init())
-+    .pipe($.if('*.html', $.crisper())) // Extract JS from .html files
++    .pipe($.if('*.html', $.crisper({scriptInHead:false}))) // Extract JS from .html files
 +    .pipe($.if('*.js', $.babel({
 +      presets: ['es2015']
 +    })))
@@ -42,8 +42,8 @@ Make sure the `js` gulp task is triggered by the common build tasks:
  - In the gulp `serve` task, make sure `js` is triggered initially and on HTML and JS files changes:
 
 ```patch
--gulp.task('serve', ['lint', 'styles', 'elements', 'images'], function () {
-+gulp.task('serve', ['lint', 'styles', 'elements', 'images', 'js'], function () {
+-gulp.task('serve', ['styles', 'elements', 'images'], function () {
++gulp.task('serve', ['styles', 'elements', 'images', 'js'], function () {
 
   ...
 
@@ -51,8 +51,7 @@ Make sure the `js` gulp task is triggered by the common build tasks:
 + gulp.watch(['app/**/*.html'], ['js', reload]);
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
   gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
-- gulp.watch(['app/{scripts,elements}/**/*.js'], ['lint']);
-+ gulp.watch(['app/{scripts,elements}/**/*.js'], ['lint', 'js']);
++ gulp.watch(['app/{scripts,elements}/**/{*.js,*.html}'], ['js']);
   gulp.watch(['app/images/**/*'], reload);
 });
 ```
@@ -68,7 +67,7 @@ gulp.task('default', ['clean'], function (cb) {
     ['copy', 'styles'],
 -   'elements',
 +   ['elements', 'js'],
-    ['lint', 'images', 'fonts', 'html'],
+    ['images', 'fonts', 'html'],
     'vulcanize', // 'cache-config',
     cb);
 });
@@ -93,29 +92,6 @@ gulp.task('default', ['clean'], function (cb) {
 var optimizeHtmlTask = function (src, dest) {
 - var assets = $.useref.assets({searchPath: ['.tmp', 'app', 'dist']});
 + var assets = $.useref.assets();
-```
-
-
-## Configure linters for ES2015
-
-- Enable ES2015 support in JSCS. Add `"esnext": true` to the `.jscsrc` file:
-
-```patch
-{
-+ "esnext": true,
-  "preset": "google",
-  "disallowSpacesInAnonymousFunctionExpression": null,
-  "excludeFiles": ["node_modules/**"]
-}
-```
-
-- Enable ES2015 support in JSHint. Add `"esnext": true` to the `.jshintrc` file:
-
-```patch
-{
-+ "esnext": true,
-  "node": true,
-  "browser": true,
 ```
 
 ## Optional - When using shadow-dom instead shady-dom
